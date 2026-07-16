@@ -1,0 +1,27 @@
+django:
+  replicaCount: 1
+
+  image:
+    repository: ghcr.io/rustamaibulatov/itnew
+    tag: latest
+    pullPolicy: Always
+
+  service:
+    type: ClusterIP
+    port: 8000
+
+postgres:
+  image:
+    repository: postgres
+    tag: "16"
+    pullPolicy: IfNotPresent
+
+  database: itnew_db
+  username: postgres
+  password: ""
+
+  service:
+    port: 5432
+
+  persistence:
+    size: 1Gi

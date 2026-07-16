@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: {{ .Release.Name }}-django
+
+spec:
+  replicas: {{ .Values.django.replicaCount }}
+
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-django
+
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-django
+
+    spec:
+      containers:
+        - name: django
+
+          image: "{{ .Values.django.image.repository }}:{{ .Values.django.image.tag }}"
+
+          imagePullPolicy: {{ .Values.django.image.pullPolicy }}
+
+          command:
+            - sh
+            - -c
+            - python manage.py migrate && python manage.py runserver 0.0.0.0:8000
+
+          ports:
+            - containerPort: {{ .Values.django.service.port }}
+
+          env:
+            - name: POSTGRES_DB
+              value: {{ .Values.postgres.database | quote }}
+
+            - name: POSTGRES_USER
+              value: {{ .Values.postgres.username | quote }}
+
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-postgres-secret
+                  key: POSTGRES_PASSWORD
+
+            - name: POSTGRES_HOST
+              value: {{ .Release.Name }}-postgres
+
+            - name: POSTGRES_PORT
+              value: {{ .Values.postgres.service.port | quote }}

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: {{ .Release.Name }}-django
+
+spec:
+  type: {{ .Values.django.service.type }}
+
+  selector:
+    app: {{ .Release.Name }}-django
+
+  ports:
+    - port: {{ .Values.django.service.port }}
+      targetPort: {{ .Values.django.service.port }}
