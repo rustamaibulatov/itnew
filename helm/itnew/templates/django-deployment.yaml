@@ -17,6 +17,16 @@ spec:
         app: {{ .Release.Name }}-django
 
     spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - {{ .Release.Name }}-django
+              topologyKey: kubernetes.io/hostname
       containers:
         - name: django
 

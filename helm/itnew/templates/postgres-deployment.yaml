@@ -47,4 +47,4 @@ spec:
       volumes:
         - name: postgres-data
           persistentVolumeClaim:
-            claimName: {{ .Release.Name }}-postgres-pvc
+            claimName: {{ .Values.postgres.persistence.claimName | default (printf "%s-postgres-pvc" .Release.Name) | quote }}

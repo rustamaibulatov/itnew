@@ -1,5 +1,5 @@
 django:
-  replicaCount: 1
+  replicaCount: 2
 
   image:
     repository: ghcr.io/rustamaibulatov/itnew
@@ -25,3 +25,5 @@ postgres:
 
   persistence:
     size: 1Gi
+    storageClass: longhorn
+    claimName: itnew-postgres-longhorn-pvc

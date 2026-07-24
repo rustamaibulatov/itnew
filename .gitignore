@@ -30,3 +30,6 @@ Thumbs.db
 
 # Local data export
 data.json
+# Local Helm files
+helm-backups/
+helm/itnew/rendered.yaml
