@@ -39,3 +39,16 @@ class Repair(models.Model):
 
     def __str__(self):
         return f'Repair #{self.id} - {self.car}'
+
+class Part(models.Model):
+    repair = models.ForeignKey(
+        Repair,
+        on_delete=models.CASCADE,
+        related_name='parts',
+    )
+    name = models.CharField(max_length=150)
+    quantity = models.PositiveIntegerField(default=1)
+    unit_price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f'{self.name} x{self.quantity}'
