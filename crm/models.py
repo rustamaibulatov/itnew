@@ -52,3 +52,15 @@ class Part(models.Model):
 
     def __str__(self):
         return f'{self.name} x{self.quantity}'
+
+class Balance(models.Model):
+    repair = models.OneToOneField(
+        Repair,
+        on_delete=models.CASCADE,
+        related_name='balance',
+    )
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Balance for repair #{self.repair_id}: {self.amount}'
