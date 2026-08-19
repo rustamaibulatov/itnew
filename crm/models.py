@@ -82,6 +82,24 @@ class SparePart(models.Model):
     def __str__(self):
         return f'{self.name} ({self.article})'
 
+class RepairSparePart(models.Model):
+    repair = models.ForeignKey(
+        Repair,
+        on_delete=models.CASCADE,
+        related_name='spare_parts',
+    )
+    spare_part = models.ForeignKey(
+        SparePart,
+        on_delete=models.PROTECT,
+        related_name='repair_usages',
+    )
+    quantity = models.PositiveIntegerField(default=1)
+    purchase_price = models.DecimalField(max_digits=10, decimal_places=2)
+    sale_price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f'{self.spare_part.name} x{self.quantity} for repair #{self.repair_id}'
+
 class Balance(models.Model):
     repair = models.OneToOneField(
         Repair,
