@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 
-from .models import Car, Client, Repair, Part, Balance
-from .serializers import CarSerializer, ClientSerializer, RepairSerializer, PartSerializer, BalanceSerializer
+from .models import Car, Client, Repair, Part, Balance, Mechanic
+from .serializers import CarSerializer, ClientSerializer, RepairSerializer, PartSerializer, BalanceSerializer, MechanicSerializer
 
 class ClientViewSet(viewsets.ModelViewSet):
     queryset = Client.objects.all().order_by('id')
@@ -10,6 +10,10 @@ class ClientViewSet(viewsets.ModelViewSet):
 class CarViewSet(viewsets.ModelViewSet):
     queryset = Car.objects.all().order_by('id')
     serializer_class = CarSerializer
+
+class MechanicViewSet(viewsets.ModelViewSet):
+    queryset = Mechanic.objects.all().order_by('id')
+    serializer_class = MechanicSerializer
 
 class RepairViewSet(viewsets.ModelViewSet):
     queryset = Repair.objects.all().order_by('id')

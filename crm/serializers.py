@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Car, Client, Repair, Part, Balance
+from .models import Car, Client, Repair, Part, Balance, Mechanic
 
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,12 +29,26 @@ class CarSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'created_at']
 
+class MechanicSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Mechanic
+        fields = [
+            'id',
+            'full_name',
+            'phone',
+            'specialization',
+            'is_active',
+            'created_at',
+        ]
+        read_only_fields = ['id', 'created_at']
+
 class RepairSerializer(serializers.ModelSerializer):
     class Meta:
         model = Repair
         fields = [
             'id',
             'car',
+            'mechanic',
             'description',
             'status',
             'work_cost',
