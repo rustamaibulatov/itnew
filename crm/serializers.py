@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Car, Client, Repair, Part, Balance, Mechanic, SparePart, RepairSparePart
+from .models import Car, Client, Repair, Part, Balance, Mechanic, SparePart, RepairSparePart, Service, RepairService
 
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
@@ -56,6 +56,34 @@ class SparePartSerializer(serializers.ModelSerializer):
             'created_at',
         ]
         read_only_fields = ['id', 'created_at']
+
+class ServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Service
+        fields = [
+            'id',
+            'name',
+            'price',
+            'is_active',
+            'created_at',
+        ]
+        read_only_fields = ['id', 'created_at']
+
+class RepairServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RepairService
+        fields = [
+            'id',
+            'repair',
+            'service',
+            'price',
+        ]
+        read_only_fields = ['id', 'price']
+
+    def create(self, validated_data):
+        service = validated_data['service']
+        validated_data['price'] = service.price
+        return RepairService.objects.create(**validated_data)
 
 class RepairSparePartSerializer(serializers.ModelSerializer):
     class Meta:

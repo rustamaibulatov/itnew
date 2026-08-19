@@ -1,6 +1,6 @@
 from rest_framework.routers import DefaultRouter
 
-from .views import CarViewSet, ClientViewSet, RepairViewSet, PartViewSet, BalanceViewSet, MechanicViewSet, SparePartViewSet, RepairSparePartViewSet
+from .views import CarViewSet, ClientViewSet, RepairViewSet, PartViewSet, BalanceViewSet, MechanicViewSet, SparePartViewSet, RepairSparePartViewSet, ServiceViewSet, RepairServiceViewSet
 
 router = DefaultRouter()
 router.register('clients', ClientViewSet)
@@ -11,5 +11,7 @@ router.register('repair-spare-parts', RepairSparePartViewSet)
 router.register('repairs', RepairViewSet)
 router.register('parts', PartViewSet)
 router.register('balances', BalanceViewSet)
+router.register('services', ServiceViewSet)
+router.register('repair-services', RepairServiceViewSet)
 
 urlpatterns = router.urls
