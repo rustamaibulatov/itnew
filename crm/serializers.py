@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Car, Client, Repair, Part, Balance, Mechanic, SparePart
+from .models import Car, Client, Repair, Part, Balance, Mechanic, SparePart, RepairSparePart
 
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
@@ -56,6 +56,38 @@ class SparePartSerializer(serializers.ModelSerializer):
             'created_at',
         ]
         read_only_fields = ['id', 'created_at']
+
+class RepairSparePartSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RepairSparePart
+        fields = [
+            'id',
+            'repair',
+            'spare_part',
+            'quantity',
+            'purchase_price',
+            'sale_price',
+        ]
+        read_only_fields = ['id', 'purchase_price', 'sale_price']
+
+    def create(self, validated_data):
+        spare_part = validated_data['spare_part']
+        quantity = validated_data['quantity']
+
+        if spare_part.stock_quantity < quantity:
+            raise serializers.ValidationError(
+                {'quantity': 'Недостаточно запчастей на складе.'}
+            )
+
+        validated_data['purchase_price'] = spare_part.purchase_price
+        validated_data['sale_price'] = spare_part.sale_price
+
+        repair_spare_part = RepairSparePart.objects.create(**validated_data)
+
+        spare_part.stock_quantity -= quantity
+        spare_part.save(update_fields=['stock_quantity'])
+
+        return repair_spare_part
 
 class RepairSerializer(serializers.ModelSerializer):
     class Meta:
