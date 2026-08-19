@@ -118,6 +118,11 @@ class RepairSparePartSerializer(serializers.ModelSerializer):
         return repair_spare_part
 
 class RepairSerializer(serializers.ModelSerializer):
+    services_total = serializers.SerializerMethodField()
+    parts_total = serializers.SerializerMethodField()
+    parts_cost = serializers.SerializerMethodField()
+    total = serializers.SerializerMethodField()
+    profit = serializers.SerializerMethodField()
     class Meta:
         model = Repair
         fields = [
@@ -127,10 +132,40 @@ class RepairSerializer(serializers.ModelSerializer):
             'description',
             'status',
             'work_cost',
+            'services_total',
+            'parts_total',
+            'parts_cost',
+            'total',
+            'profit',
             'created_at',
             'completed_at',
         ]
         read_only_fields = ['id', 'created_at']
+def get_services_total(self, obj):
+        return sum(
+            item.price
+            for item in obj.repair_services.all()
+        )
+def get_parts_total(self, obj):
+        return sum(
+            item.sale_price * item.quantity
+            for item in obj.repair_spare_parts.all()
+        )
+def get_parts_cost(self, obj):
+        return sum(
+            item.purchase_price * item.quantity
+            for item in obj.repair_spare_parts.all()
+        )
+def get_total(self, obj):
+        return (
+            self.get_services_total(obj)
+            + self.get_parts_total(obj)
+        )
+def get_profit(self, obj):
+        return (
+            self.get_total(obj)
+            - self.get_parts_cost(obj)
+        )
 
 class PartSerializer(serializers.ModelSerializer):
     class Meta:
