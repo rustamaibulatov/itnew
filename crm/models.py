@@ -25,12 +25,29 @@ class Car(models.Model):
     def __str__(self):
         return f'{self.brand} {self.model} — {self.license_plate}'
 
+class Mechanic(models.Model):
+    full_name = models.CharField(max_length=150)
+    phone = models.CharField(max_length=20, blank=True)
+    specialization = models.CharField(max_length=150, blank=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.full_name
+
 class Repair(models.Model):
     car = models.ForeignKey(
         Car,
         on_delete=models.CASCADE,
         related_name='repairs',
-    )
+)
+    mechanic = models.ForeignKey(
+        Mechanic,
+        on_delete=models.SET_NULL,
+        related_name='repairs',
+        null=True,
+        blank=True,
+)
     description = models.TextField()
     status = models.CharField(max_length=20, default='new')
     work_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0)
