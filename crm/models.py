@@ -49,7 +49,18 @@ class Repair(models.Model):
         blank=True,
 )
     description = models.TextField()
-    status = models.CharField(max_length=20, default='new')
+    STATUS_CHOICES = [
+        ('new', 'Новый'),
+        ('in_progress', 'В работе'),
+        ('waiting_parts', 'Ждёт запчасти'),
+        ('completed', 'Завершён'),
+        ('cancelled', 'Отменён'),
+    ]
+    status = models.CharField(
+    max_length=20,
+    choices=STATUS_CHOICES,
+    default='new',
+)
     work_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     completed_at = models.DateTimeField(null=True, blank=True)
