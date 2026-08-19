@@ -100,6 +100,31 @@ class RepairSparePart(models.Model):
     def __str__(self):
         return f'{self.spare_part.name} x{self.quantity} for repair #{self.repair_id}'
 
+class Service(models.Model):
+    name = models.CharField(max_length=150)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+class RepairService(models.Model):
+    repair = models.ForeignKey(
+        Repair,
+        on_delete=models.CASCADE,
+        related_name='repair_services',
+    )
+    service = models.ForeignKey(
+        Service,
+        on_delete=models.PROTECT,
+        related_name='repair_services',
+    )
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f'{self.service.name} - {self.price}'
+
 class Balance(models.Model):
     repair = models.OneToOneField(
         Repair,
