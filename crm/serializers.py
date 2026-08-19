@@ -149,12 +149,12 @@ class RepairSerializer(serializers.ModelSerializer):
     def get_parts_total(self, obj):
         return sum(
             item.sale_price * item.quantity
-            for item in obj.repair_spare_parts.all()
+            for item in obj.spare_parts.all()
         )
     def get_parts_cost(self, obj):
         return sum(
             item.purchase_price * item.quantity
-            for item in obj.repair_spare_parts.all()
+            for item in obj.spare_parts.all()
         )
     def get_total(self, obj):
         return (
