@@ -217,20 +217,27 @@ class RepairSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         old_status = instance.status
-        new_status = validated_data.get('status', instance.status)
+        new_status = validated_data.get('status', old_status)
 
-        if new_status == 'completed':
+        if old_status == 'completed' and new_status != 'completed':
+            raise serializers.ValidationError({
+                'status': 'Завершённый ремонт нельзя вернуть в работу.'
+            })
+
+        if new_status == 'completed' and old_status != 'completed':
             from django.utils import timezone
             validated_data['completed_at'] = timezone.now()
-        else:
+
+        elif new_status != 'completed':
             validated_data['completed_at'] = None
 
         updated_instance = super().update(instance, validated_data)
+
         if old_status != updated_instance.status:
             RepairStatusHistory.objects.create(
                 repair=updated_instance,
                 status=updated_instance.status,
-        )
+            )
 
         return updated_instance
 
