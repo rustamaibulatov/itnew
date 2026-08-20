@@ -152,11 +152,17 @@ class RepairSerializer(serializers.ModelSerializer):
     read_only=True,
 )
 
+    car_details = CarSerializer(
+    source='car',
+    read_only=True,
+)
+
     class Meta:
         model = Repair
         fields = [
             'id',
             'car',
+            'car_details',
             'mechanic',
             'mechanic_details',
             'description',
