@@ -179,6 +179,16 @@ class RepairSerializer(serializers.ModelSerializer):
             self.get_total(obj)
             - self.get_parts_cost(obj)
         )
+    def create(self, validated_data):
+        repair = Repair.objects.create(**validated_data)
+
+        RepairStatusHistory.objects.create(
+            repair=repair,
+            status=repair.status,
+    )
+
+        return repair
+
     def update(self, instance, validated_data):
         old_status = instance.status
         new_status = validated_data.get('status', instance.status)
