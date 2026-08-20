@@ -135,6 +135,17 @@ class RepairSerializer(serializers.ModelSerializer):
     many=True,
     read_only=True,
 )
+
+    services = RepairServiceSerializer(
+    source='repair_services',
+    many=True,
+    read_only=True,
+)
+
+    spare_parts = RepairSparePartSerializer(
+    many=True,
+    read_only=True,
+)
     class Meta:
         model = Repair
         fields = [
@@ -144,6 +155,8 @@ class RepairSerializer(serializers.ModelSerializer):
             'description',
             'status',
             'work_cost',
+            'services',
+            'spare_parts',
             'services_total',
             'parts_total',
             'parts_cost',
