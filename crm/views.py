@@ -36,6 +36,7 @@ class RepairViewSet(viewsets.ModelViewSet):
         mechanic = self.request.query_params.get('mechanic')
         car = self.request.query_params.get('car')
         search = self.request.query_params.get('search')
+        ordering = self.request.query_params.get('ordering')
 
         if status:
             queryset = queryset.filter(status=status)
@@ -48,12 +49,24 @@ class RepairViewSet(viewsets.ModelViewSet):
 
         if search:
             queryset = queryset.filter(
-            Q(description__icontains=search) |
-            Q(car__license_plate__icontains=search) |
-            Q(car__vin__icontains=search) |
-            Q(car__client__full_name__icontains=search) |
-            Q(car__client__phone__icontains=search)
-    )
+                Q(description__icontains=search) |
+                Q(car__license_plate__icontains=search) |
+                Q(car__vin__icontains=search) |
+                Q(car__client__full_name__icontains=search) |
+                Q(car__client__phone__icontains=search)
+            )
+
+        allowed_ordering = [
+            'id',
+            '-id',
+            'created_at',
+            '-created_at',
+            'work_cost',
+            '-work_cost',
+        ]
+
+        if ordering in allowed_ordering:
+            queryset = queryset.order_by(ordering)
 
         return queryset
 
