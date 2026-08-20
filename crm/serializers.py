@@ -117,12 +117,24 @@ class RepairSparePartSerializer(serializers.ModelSerializer):
 
         return repair_spare_part
 
+class RepairStatusHistorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RepairStatusHistory
+        fields = [
+            'status',
+            'changed_at',
+        ]
+
 class RepairSerializer(serializers.ModelSerializer):
     services_total = serializers.SerializerMethodField()
     parts_total = serializers.SerializerMethodField()
     parts_cost = serializers.SerializerMethodField()
     total = serializers.SerializerMethodField()
     profit = serializers.SerializerMethodField()
+    status_history = RepairStatusHistorySerializer(
+    many=True,
+    read_only=True,
+)
     class Meta:
         model = Repair
         fields = [
@@ -139,6 +151,7 @@ class RepairSerializer(serializers.ModelSerializer):
             'profit',
             'created_at',
             'completed_at',
+            'status_history',
         ]
         read_only_fields = ['id', 'created_at']
     def get_services_total(self, obj):
