@@ -68,6 +68,21 @@ class Repair(models.Model):
     def __str__(self):
         return f'Repair #{self.id} - {self.car}'
 
+class RepairStatusHistory(models.Model):
+    repair = models.ForeignKey(
+        Repair,
+        on_delete=models.CASCADE,
+        related_name='status_history',
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=Repair.STATUS_CHOICES,
+    )
+    changed_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Repair #{self.repair_id}: {self.status}'
+
 class Part(models.Model):
     repair = models.ForeignKey(
         Repair,
