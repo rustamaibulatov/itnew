@@ -157,12 +157,15 @@ class RepairSerializer(serializers.ModelSerializer):
     read_only=True,
 )
 
+    client_details = serializers.SerializerMethodField()
+
     class Meta:
         model = Repair
         fields = [
             'id',
             'car',
             'car_details',
+            'client_details',
             'mechanic',
             'mechanic_details',
             'description',
@@ -240,6 +243,12 @@ class RepairSerializer(serializers.ModelSerializer):
             )
 
         return updated_instance
+
+    def get_client_details(self, obj):
+        if not obj.car or not obj.car.client:
+            return None
+
+        return ClientSerializer(obj.car.client).data
 
 class PartSerializer(serializers.ModelSerializer):
     class Meta:
