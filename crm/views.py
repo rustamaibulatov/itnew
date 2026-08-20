@@ -27,6 +27,24 @@ class RepairViewSet(viewsets.ModelViewSet):
     queryset = Repair.objects.all().order_by('id')
     serializer_class = RepairSerializer
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        status = self.request.query_params.get('status')
+        mechanic = self.request.query_params.get('mechanic')
+        car = self.request.query_params.get('car')
+
+        if status:
+            queryset = queryset.filter(status=status)
+
+        if mechanic:
+            queryset = queryset.filter(mechanic_id=mechanic)
+
+        if car:
+            queryset = queryset.filter(car_id=car)
+
+        return queryset
+
 class PartViewSet(viewsets.ModelViewSet):
     queryset = Part.objects.all().order_by('id')
     serializer_class = PartSerializer
