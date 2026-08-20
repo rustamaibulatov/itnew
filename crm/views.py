@@ -1,3 +1,5 @@
+from django.db.models import Q
+
 from rest_framework import viewsets
 
 from .models import Car, Client, Repair, Part, Balance, Mechanic, SparePart, RepairSparePart, Service, RepairService
@@ -33,6 +35,7 @@ class RepairViewSet(viewsets.ModelViewSet):
         status = self.request.query_params.get('status')
         mechanic = self.request.query_params.get('mechanic')
         car = self.request.query_params.get('car')
+        search = self.request.query_params.get('search')
 
         if status:
             queryset = queryset.filter(status=status)
@@ -42,6 +45,15 @@ class RepairViewSet(viewsets.ModelViewSet):
 
         if car:
             queryset = queryset.filter(car_id=car)
+
+        if search:
+            queryset = queryset.filter(
+            Q(description__icontains=search) |
+            Q(car__license_plate__icontains=search) |
+            Q(car__vin__icontains=search) |
+            Q(car__client__full_name__icontains=search) |
+            Q(car__client__phone__icontains=search)
+    )
 
         return queryset
 
