@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Car, Client, Repair, Part, Balance, Mechanic, SparePart, RepairSparePart, Service, RepairService
+from .models import Car, Client, Repair, Part, Balance, Mechanic, SparePart, RepairSparePart, Service, RepairService, RepairStatusHistory
 
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
@@ -167,6 +167,7 @@ class RepairSerializer(serializers.ModelSerializer):
             - self.get_parts_cost(obj)
         )
     def update(self, instance, validated_data):
+        old_status = instance.status
         new_status = validated_data.get('status', instance.status)
 
         if new_status == 'completed':
@@ -175,7 +176,14 @@ class RepairSerializer(serializers.ModelSerializer):
         else:
             validated_data['completed_at'] = None
 
-        return super().update(instance, validated_data)
+        updated_instance = super().update(instance, validated_data)
+        if old_status != updated_instance.status:
+            RepairStatusHistory.objects.create(
+                repair=updated_instance,
+                status=updated_instance.status,
+        )
+
+        return updated_instance
 
 class PartSerializer(serializers.ModelSerializer):
     class Meta:
