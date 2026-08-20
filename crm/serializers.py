@@ -166,6 +166,16 @@ class RepairSerializer(serializers.ModelSerializer):
             self.get_total(obj)
             - self.get_parts_cost(obj)
         )
+    def update(self, instance, validated_data):
+        new_status = validated_data.get('status', instance.status)
+
+        if new_status == 'completed':
+            from django.utils import timezone
+            validated_data['completed_at'] = timezone.now()
+        else:
+            validated_data['completed_at'] = None
+
+        return super().update(instance, validated_data)
 
 class PartSerializer(serializers.ModelSerializer):
     class Meta:
