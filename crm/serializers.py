@@ -91,6 +91,27 @@ class RepairServiceSerializer(serializers.ModelSerializer):
         validated_data['price'] = service.price
         return RepairService.objects.create(**validated_data)
 
+    def update(self, instance, validated_data):
+        if instance.repair.status == 'completed':
+            raise serializers.ValidationError({
+                'repair': 'Нельзя изменять услуги в завершённом ремонте.'
+            })
+
+        new_repair = validated_data.get('repair', instance.repair)
+        new_service = validated_data.get('service', instance.service)
+
+        if new_repair.id != instance.repair_id:
+            raise serializers.ValidationError({
+                'repair': 'Нельзя переносить услугу в другой ремонт.'
+            })
+
+        if new_service.id != instance.service_id:
+            raise serializers.ValidationError({
+                'service': 'Нельзя заменять услугу в этой записи. Удалите её и добавьте новую.'
+            })
+
+        return super().update(instance, validated_data)
+
 class RepairSparePartSerializer(serializers.ModelSerializer):
     class Meta:
         model = RepairSparePart
