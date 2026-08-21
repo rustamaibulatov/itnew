@@ -300,6 +300,19 @@ class RepairSerializer(serializers.ModelSerializer):
         old_status = instance.status
         new_status = validated_data.get('status', old_status)
 
+        allowed_transitions = {
+            'new': ['in_progress'],
+            'in_progress': ['completed'],
+        }
+
+        if new_status != old_status:
+            allowed_statuses = allowed_transitions.get(old_status, [])
+
+            if new_status not in allowed_statuses:
+                raise serializers.ValidationError({
+                    'status': f'Нельзя изменить статус с {old_status} на {new_status}.'
+                })
+
         if old_status == 'completed' and new_status != 'completed':
             raise serializers.ValidationError({
                 'status': 'Завершённый ремонт нельзя вернуть в работу.'
