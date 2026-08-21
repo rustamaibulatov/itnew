@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: itnew-django-settings-override
+data:
+  settings_override.py: |
+    from .settings import *
+    ALLOWED_HOSTS = ["192.168.56.200", "127.0.0.1", "localhost"]
