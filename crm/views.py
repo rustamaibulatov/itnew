@@ -1,6 +1,6 @@
 from django.db.models import Q
 
-from rest_framework import viewsets
+from rest_framework import viewsets, serializers
 
 from .models import Car, Client, Repair, Part, Balance, Mechanic, SparePart, RepairSparePart, Service, RepairService
 from .serializers import CarSerializer, ClientSerializer, RepairSerializer, PartSerializer, BalanceSerializer, MechanicSerializer, SparePartSerializer, RepairSparePartSerializer, ServiceSerializer, RepairServiceSerializer
@@ -25,11 +25,16 @@ class RepairSparePartViewSet(viewsets.ModelViewSet):
     queryset = RepairSparePart.objects.all().order_by('id')
     serializer_class = RepairSparePartSerializer
     def perform_destroy(self, instance):
-            spare_part = instance.spare_part
-            spare_part.stock_quantity += instance.quantity
-            spare_part.save(update_fields=['stock_quantity'])
+        if instance.repair.status == 'completed':
+            raise serializers.ValidationError({
+            'repair': 'Нельзя удалять запчасти из завершённого ремонта.'
+        })
 
-            instance.delete()
+        spare_part = instance.spare_part
+        spare_part.stock_quantity += instance.quantity
+        spare_part.save(update_fields=['stock_quantity'])
+
+        instance.delete()
 
 class RepairViewSet(viewsets.ModelViewSet):
     queryset = Repair.objects.all().order_by('id')
