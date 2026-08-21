@@ -306,6 +306,14 @@ class RepairSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({
                 'mechanic': 'Нельзя завершить ремонт без назначенного механика.'
             })
+        if new_status == 'completed':
+            has_services = instance.services.exists()
+            has_spare_parts = instance.spare_parts.exists()
+
+            if not has_services and not has_spare_parts:
+                raise serializers.ValidationError({
+                    'repair': 'Нельзя завершить пустой ремонт без услуг или запчастей.'
+                })
 
         allowed_transitions = {
             'new': ['in_progress'],
