@@ -300,6 +300,13 @@ class RepairSerializer(serializers.ModelSerializer):
         old_status = instance.status
         new_status = validated_data.get('status', old_status)
 
+        new_mechanic = validated_data.get('mechanic', instance.mechanic)
+
+        if new_status == 'completed' and new_mechanic is None:
+            raise serializers.ValidationError({
+                'mechanic': 'Нельзя завершить ремонт без назначенного механика.'
+            })
+
         allowed_transitions = {
             'new': ['in_progress'],
             'in_progress': ['completed'],
