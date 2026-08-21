@@ -307,7 +307,7 @@ class RepairSerializer(serializers.ModelSerializer):
                 'mechanic': 'Нельзя завершить ремонт без назначенного механика.'
             })
         if new_status == 'completed':
-            has_services = instance.services.exists()
+            has_services = instance.repair_services.exists()
             has_spare_parts = instance.spare_parts.exists()
 
             if not has_services and not has_spare_parts:
