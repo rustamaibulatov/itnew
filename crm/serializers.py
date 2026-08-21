@@ -292,6 +292,11 @@ class RepairSerializer(serializers.ModelSerializer):
         return repair
 
     def update(self, instance, validated_data):
+        if instance.status == 'completed':
+            raise serializers.ValidationError({
+                'repair': 'Завершённый ремонт нельзя изменять.'
+            })
+
         old_status = instance.status
         new_status = validated_data.get('status', old_status)
 
