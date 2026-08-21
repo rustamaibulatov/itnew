@@ -96,3 +96,11 @@ class ServiceViewSet(viewsets.ModelViewSet):
 class RepairServiceViewSet(viewsets.ModelViewSet):
     queryset = RepairService.objects.all().order_by('id')
     serializer_class = RepairServiceSerializer
+
+    def perform_destroy(self, instance):
+        if instance.repair.status == 'completed':
+            raise serializers.ValidationError({
+                'repair': 'Нельзя удалять услуги из завершённого ремонта.'
+            })
+
+        instance.delete()
