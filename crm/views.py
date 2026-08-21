@@ -24,6 +24,12 @@ class SparePartViewSet(viewsets.ModelViewSet):
 class RepairSparePartViewSet(viewsets.ModelViewSet):
     queryset = RepairSparePart.objects.all().order_by('id')
     serializer_class = RepairSparePartSerializer
+    def perform_destroy(self, instance):
+            spare_part = instance.spare_part
+            spare_part.stock_quantity += instance.quantity
+            spare_part.save(update_fields=['stock_quantity'])
+
+            instance.delete()
 
 class RepairViewSet(viewsets.ModelViewSet):
     queryset = Repair.objects.all().order_by('id')
