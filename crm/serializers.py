@@ -129,6 +129,46 @@ class RepairSparePartSerializer(serializers.ModelSerializer):
 
         return repair_spare_part
 
+    def update(self, instance, validated_data):
+        if instance.repair.status == 'completed':
+            raise serializers.ValidationError({
+                'repair': 'Нельзя изменять запчасти в завершённом ремонте.'
+            })
+
+        new_repair = validated_data.get('repair', instance.repair)
+        new_spare_part = validated_data.get('spare_part', instance.spare_part)
+
+        if new_repair.id != instance.repair_id:
+            raise serializers.ValidationError({
+                'repair': 'Нельзя переносить запчасть в другой ремонт.'
+            })
+
+        if new_spare_part.id != instance.spare_part_id:
+            raise serializers.ValidationError({
+                'spare_part': 'Нельзя заменить запчасть в этой записи. Удалите её и добавьте новую.'
+            })
+
+        old_quantity = instance.quantity
+        new_quantity = validated_data.get('quantity', old_quantity)
+        difference = new_quantity - old_quantity
+
+        spare_part = instance.spare_part
+
+        if difference > 0:
+            if spare_part.stock_quantity < difference:
+                raise serializers.ValidationError({
+                    'quantity': 'Недостаточно запчастей на складе.'
+                })
+
+            spare_part.stock_quantity -= difference
+
+        elif difference < 0:
+            spare_part.stock_quantity += abs(difference)
+
+        spare_part.save(update_fields=['stock_quantity'])
+
+        return super().update(instance, validated_data)
+
 class RepairStatusHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = RepairStatusHistory
