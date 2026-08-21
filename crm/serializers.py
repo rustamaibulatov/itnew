@@ -101,6 +101,12 @@ class RepairSparePartSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         spare_part = validated_data['spare_part']
         quantity = validated_data['quantity']
+        repair = validated_data['repair']
+
+        if repair.status == 'completed':
+            raise serializers.ValidationError({
+                'repair': 'Нельзя добавлять запчасти в завершённый ремонт.'
+            })
 
         if spare_part.stock_quantity < quantity:
             raise serializers.ValidationError(
