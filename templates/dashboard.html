@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Service CRM</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #0f1115;
+            color: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #171a21;
+            border-right: 1px solid #292d36;
+            padding: 28px 20px;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 38px;
+        }
+
+        .logo span {
+            color: #ff7a00;
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav a {
+            color: #aeb4bf;
+            text-decoration: none;
+            padding: 12px 14px;
+            border-radius: 10px;
+            transition: 0.2s;
+        }
+
+        .nav a:hover,
+        .nav a.active {
+            background: #232833;
+            color: white;
+        }
+
+        .main {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            padding: 32px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .topbar h1 {
+            font-size: 30px;
+        }
+
+        .topbar p {
+            color: #9299a6;
+            margin-top: 6px;
+        }
+
+        .status {
+            background: #173923;
+            color: #6ce58e;
+            padding: 9px 14px;
+            border-radius: 999px;
+            font-size: 14px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .card {
+            background: #171a21;
+            border: 1px solid #292d36;
+            border-radius: 16px;
+            padding: 22px;
+        }
+
+        .card-title {
+            color: #9299a6;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .card-value {
+            font-size: 30px;
+            font-weight: 700;
+        }
+
+        .card-note {
+            margin-top: 8px;
+            font-size: 13px;
+            color: #6f7784;
+        }
+
+        .accent {
+            color: #ff7a00;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 18px;
+        }
+
+        .panel {
+            background: #171a21;
+            border: 1px solid #292d36;
+            border-radius: 16px;
+            padding: 22px;
+        }
+
+        .panel h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            color: #777f8c;
+            font-size: 13px;
+            font-weight: 500;
+            padding: 12px 10px;
+            border-bottom: 1px solid #292d36;
+        }
+
+        td {
+            padding: 14px 10px;
+            border-bottom: 1px solid #232833;
+            font-size: 14px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+        }
+
+        .badge-new {
+            background: #1d2d46;
+            color: #72a7ff;
+        }
+
+        .badge-progress {
+            background: #49391c;
+            color: #ffc55c;
+        }
+
+        .badge-completed {
+            background: #173923;
+            color: #6ce58e;
+        }
+
+        .quick-actions {
+            display: flex;
+            flex-direction: column;
+p: 12px;
+        }
+
+        .action {
+            background: #20242d;
+            border: 1px solid #303641;
+            color: white;
+            padding: 14px;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .action:hover {
+            border-color: #ff7a00;
+            transform: translateY(-1px);
+        }
+
+        .action strong {
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .action span {
+            color: #828a96;
+            font-size: 13px;
+        }
+
+        max-width: 1100px {
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+        <div class="logo">
+            AUTO <span>CRM</span>
+        </div>
+
+        <nav class="nav">
+            <a href="#" class="active">Дашборд</a>
+            <a href="#">Ремонты</a>
+            <a href="#">Клиенты</a>
+            <a href="#">Автомобили</a>
+            <a href="#">Механики</a>
+            <a href="#">Услуги</a>
+            <a href="#">Склад</a>
+        </nav>
+    </aside>
+
+    <main class="main">
+
+        <div class="topbar">
+            <div>
+                <h1>Панель управления</h1>
+                <p>Обзор работы автосервиса</p>
+            </div>
+
+            <div class="status">
+                ● Система работает
+            </div>
+        </div>
+
+        <section class="cards">
+
+            <div class="card">
+                <div class="card-title">Всего клиентов</div>
+                <div class="card-value">
+                    {{ clients_count|default:0 }}
+                </div>
+                <div class="card-note">Клиентская база</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Автомобили</div>
+                <div class="card-value">
+                    {{ cars_count|default:0 }}
+                </div>
+                <div class="card-note">В базе сервиса</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Ремонты в работе</div>
+                <div class="card-value accent">
+                    {{ active_repairs_count|default:0 }}
+                </div>
+                <div class="card-note">Статус in_progress</div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Общая прибыль</div>
+                <div class="card-value">
+                    {{ total_profit|default:0 }} ₽
+                </div>
+                <div class="card-note">По завершённым ремонтам</div>
+            </div>
+
+        </section>
+
+        <section class="grid">
+
+            <div class="panel">
+                <h2>Последние ремонты</h2>
+
+                <table>
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Автомобиль</th>
+                        <th>Описание</th>
+                        <th>Статус</th>
+                        <th>Сумма</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    {% for repair in recent_repairs %}
+                    <tr>
+                        <td>#{{ repair.id }}</td>
+
+                        <td>
+                            {{ repair.car.brand }}
+                            {{ repair.car.model }}
+                        </td>
+
+                        <td>{{ repair.description }}</td>
+
+                        <td>
+                            {% if repair.status == 'new' %}
+                                <span class="badge badge-new">Новый</span>
+
+                            {% elif repair.status == 'in_progress' %}
+                                <span class="badge badge-progress">В работе</span>
+
+                            {% elif repair.status == 'completed' %}
+                                <span class="badge badge-completed">Завершён</span>
+                            {%
+endif %}
+                        </td>
+
+                        <td>
+                            {{ repair.total|default:0 }} ₽
+                        </td>
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">
+                            Пока нет ремонтов
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="panel">
+                <h2>Быстрые действия</h2>
+
+                <div class="quick-actions">
+
+                    <a class="action" href="#">
+                        <strong>+ Новый ремонт</strong>
+                        <span>Создать заказ-наряд</span>
+                    </a>
+
+                    <a class="action" href="#">
+                        <strong>+ Новый клиент</strong>
+                        <span>Добавить клиента в CRM</span>
+                    </a>
+
+                    <a class="action" href="#">
+                        <strong>+ Автомобиль</strong>
+                        <span>Добавить машину клиента</span>
+                    </a>
+
+                    <a class="action" href="#">
+                        <strong>Склад</strong>
+                        <span>Посмотреть остатки запчастей</span>
+                    </a>
+
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html> ga

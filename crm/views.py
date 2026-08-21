@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from django.db.models import Q
 
 from rest_framework import viewsets, serializers
@@ -104,3 +105,67 @@ class RepairServiceViewSet(viewsets.ModelViewSet):
             })
 
         instance.delete()
+
+def dashboard_view(request):
+    clients_count = Client.objects.count()
+    cars_count = Car.objects.count()
+
+    active_repairs_count = Repair.objects.filter(
+        status='in_progress'
+    ).count()
+
+    completed_repairs = Repair.objects.filter(
+        status='completed'
+    ).prefetch_related(
+        'repair_services',
+        'spare_parts'
+    )
+
+    total_profit = 0
+
+    for repair in completed_repairs:
+        services_total = sum(
+            item.price for item in repair.repair_services.all()
+        )
+
+        parts_total = sum(
+            item.sale_price for item in repair.spare_parts.all()
+        )
+
+        parts_cost = sum(
+            item.purchase_price for item in repair.spare_parts.all()
+        )
+
+        total_profit += services_total + parts_total - parts_cost
+
+    recent_repairs = Repair.objects.select_related(
+        'car'
+    ).prefetch_related(
+        'repair_services',
+        'spare_parts'
+    ).order_by('-created_at')[:5]
+
+    for repair in recent_repairs:
+        services_total = sum(
+            item.price for item in repair.repair_services.all()
+        )
+
+        parts_total = sum(
+            item.sale_price for item in repair.spare_parts.all()
+        )
+
+        repair.total = services_total + parts_total
+
+    context = {
+        'clients_count': clients_count,
+        'cars_count': cars_count,
+        'active_repairs_count': active_repairs_count,
+        'total_profit': total_profit,
+        'recent_repairs': recent_repairs,
+    }
+
+    return render(
+        request,
+        'dashboard.html',
+        context
+    )
