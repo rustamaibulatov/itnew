@@ -82,6 +82,12 @@ class RepairServiceSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         service = validated_data['service']
+        repair = validated_data['repair']
+
+        if repair.status == 'completed':
+            raise serializers.ValidationError({
+            'repair': 'Нельзя добавлять услуги в завершённый ремонт.'
+        })
         validated_data['price'] = service.price
         return RepairService.objects.create(**validated_data)
 
